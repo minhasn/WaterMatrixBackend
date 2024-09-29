@@ -14,23 +14,22 @@ const register = async (req, res) => {
 };
 
 const login = async (req, res) => {
-  const { phone_number, password_hash } = req.body;
+  const { PhoneNo, Password } = req.body;
 
   try {
-    const user = await User.findByphone_number(phone_number);
+    const user = await User.findByPhoneNumber(PhoneNo); // Corrected function name
 
     if (!user) {
       return res.status(400).json({ error: 'Invalid phone number or password' });
     }
 
-    const validPassword = await bcrypt.compare(Password, user.password_hash);
+    const validPassword = await bcrypt.compare(Password, user.password_hash); // Corrected field name
 
     if (!validPassword) {
       return res.status(400).json({ error: 'Invalid phone number or password' });
     }
 
-    // Return the UserId instead of User_Id
-    res.status(200).json({ UserId: user.UserId, name: user.name, city: user.city });
+    res.status(200).json({ UserId: user.UserId, FullName: user.name, City: user.city }); // Adjusted keys to match DB
   } catch (error) {
     console.error('Database query error:', error.stack);
     res.status(500).json({ error: 'Database error' });
