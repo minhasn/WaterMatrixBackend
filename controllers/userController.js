@@ -1,4 +1,5 @@
 // userController.js
+const bcrypt = require('bcrypt');
 const User = require('../models/userModel');
 
 exports.getAllUsers = (req, res) => {
@@ -17,12 +18,23 @@ exports.getUserById = (req, res) => {
     });
 };
 
-exports.createUser = (req, res) => {
-    const userData = req.body;
-    User.createUser(userData, (err, newUser) => {
-        if (err) return res.status(400).json({ message: 'Error creating user' });
-        res.status(201).json(newUser);
-    });
+exports.createUser = async (req, res) => {
+    try {
+        const userData = req.body;
+
+        // Hash the password
+        const hashedPassword = await bcrypt.hash(userData.password_hash, 10); // 10 salt rounds
+
+        // Replace password_hash with the hashed password
+        const newUserData = { ...userData, password_hash: hashedPassword };
+
+        User.createUser(newUserData, (err, newUser) => {
+            if (err) return res.status(400).json({ message: 'Error creating user' });
+            res.status(201).json(newUser);
+        });
+    } catch (error) {
+        res.status(500).json({ message: 'Error creating user', error: error.message });
+    }
 };
 
 exports.updateUser = (req, res) => {
