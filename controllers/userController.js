@@ -1,5 +1,5 @@
 // userController.js
-const User = require('./userModel');
+const User = require('../models/userModel');
 
 exports.getAllUsers = (req, res) => {
     User.getAllUsers((err, users) => {
