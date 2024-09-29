@@ -1,30 +1,29 @@
-const mysql = require('mysql2/promise');
-const bcrypt = require('bcrypt');
+const { v4: uuidv4 } = require('uuid');
+const client = require('../config/db');
+const bcrypt = require('bcryptjs');
 
-// Database connection setup
-const pool = mysql.createPool({
-  host: 'junction.proxy.rlwy.net',
-  user: 'root',
-  password: 'RTYtGyNSeerXbGzCjgZKAwemeDsFAvao',
-  database: 'railway',
-  port: 10063,
-});
+class User {
+  static async create({ name, phone_number, city, password, email, country, avatar_url }) {
+    const password_hash = await bcrypt.hash(password, 10);
+    const result = await client.query(
+      'INSERT INTO `User` (name, phone_number, city, password_hash, email, country) VALUES ($1, $2, $3, $4, $5, $6) RETURNING "UserId", "name", "email"',
+      [name, phone_number, city, password_hash, email, country]
+    );
+    return result.rows[0];  // This will return the UserId along with the other fields
+  }
 
-// Function to create a new user
-async function createUser(name, email, phoneNumber, password, city, country) {
-  const hashedPassword = await bcrypt.hash(password, 10);
-  const [result] = await pool.execute(
-    `INSERT INTO users (name, email, phone_number, password_hash, country, city, created_at, updated_at) 
-     VALUES (?, ?, ?, ?, ?, ?, NOW(), NOW())`,
-    [name, email, phoneNumber, hashedPassword, country, city]
-  );
-  return result;
+  static async findByPhoneNumber(phone_number) {
+    const result = await client.query(
+      'SELECT * FROM `User` WHERE phone_number = $1',
+      [phone_number]
+    );
+    return result.rows[0];
+  }
+
+  static async delete(userId) {
+    await client.query('DELETE FROM `User` WHERE UserId = $1', [userId]);
+    return { message: 'User deleted successfully' };
+  }
 }
 
-// Function to find a user by phone number
-async function findUserByPhone(phoneNumber) {
-  const [rows] = await pool.execute('SELECT * FROM users WHERE phone_number = ?', [phoneNumber]);
-  return rows[0]; // Return the first row
-}
-
-module.exports = { createUser, findUserByPhone };
+module.exports = User;
