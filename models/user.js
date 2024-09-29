@@ -6,7 +6,7 @@ class User {
   static async create({ name, phone_number, city, password, email, country, avatar_url }) {
     const password_hash = await bcrypt.hash(password, 10);
     const result = await client.query(
-      'INSERT INTO "User" ("name", "phone_number", "city", "password_hash", "email", "country") VALUES ($1, $2, $3, $4, $5, $6) RETURNING "UserId", "name", "email"',
+      'INSERT INTO \`User\` ("name", "phone_number", "city", "password_hash", "email", "country") VALUES ($1, $2, $3, $4, $5, $6) RETURNING "UserId", "name", "email"',
       [name, phone_number, city, password_hash, email, country]
     );
     return result.rows[0];  // This will return the UserId along with the other fields
