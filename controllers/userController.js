@@ -31,6 +31,7 @@ exports.loginUser = async (req, res) => {
 
     res.status(200).json({ UserId: user.UserId, message: 'Logged in successfully' });
   } catch (error) {
-    res.status(500).json({ message: 'An error occurred.', error });
+    console.error('Login error:', error); // Log the detailed error
+    res.status(500).json({ message: 'An error occurred.', error: error.message });
   }
 };
