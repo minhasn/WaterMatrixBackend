@@ -1,5 +1,5 @@
 // userController.js
-const bcrypt = require('bcrypt');
+const bcrypt = require('bcryptjs');
 const User = require('../models/userModel');
 
 exports.getAllUsers = (req, res) => {
