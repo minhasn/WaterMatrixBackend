@@ -17,14 +17,6 @@ const User = {
         });
     },
 
-    getUserByPhoneNumber: (phone_number, callback) => {
-        const query = 'SELECT * FROM users WHERE phone_number = ?';
-        db.query(query, [phone_number], (err, result) => {
-            if (err) return callback(err, null);
-            callback(null, result[0]);
-        });
-    },
-
     createUser: (userData, callback) => {
         const query = 'INSERT INTO users SET ?';
         db.query(query, userData, (err, result) => {
