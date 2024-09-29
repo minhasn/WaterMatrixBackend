@@ -1,7 +1,7 @@
-const bcrypt = require('bcryptjs');
 const User = require('../models/userModel');
+const bcrypt = require('bcrypt');
 
-// Get all users
+// Fetch all users
 exports.getAllUsers = (req, res) => {
     User.getAllUsers((err, users) => {
         if (err) return res.status(500).json({ message: 'Error retrieving users' });
@@ -9,7 +9,7 @@ exports.getAllUsers = (req, res) => {
     });
 };
 
-// Get user by ID
+// Fetch a user by ID
 exports.getUserById = (req, res) => {
     const userId = req.params.id;
     User.getUserById(userId, (err, user) => {
@@ -19,7 +19,7 @@ exports.getUserById = (req, res) => {
     });
 };
 
-// Create new user
+// Create a new user
 exports.createUser = (req, res) => {
     const userData = req.body;
     User.createUser(userData, (err, newUser) => {
@@ -28,7 +28,7 @@ exports.createUser = (req, res) => {
     });
 };
 
-// Update user
+// Update a user by ID
 exports.updateUser = (req, res) => {
     const userId = req.params.id;
     const userData = req.body;
@@ -38,7 +38,7 @@ exports.updateUser = (req, res) => {
     });
 };
 
-// Delete user
+// Delete a user by ID
 exports.deleteUser = (req, res) => {
     const userId = req.params.id;
     User.deleteUser(userId, (err, success) => {
@@ -48,37 +48,30 @@ exports.deleteUser = (req, res) => {
     });
 };
 
-// Login User
-exports.loginUser = async (req, res) => {
+// Login user - This is the function we added
+exports.loginUser = (req, res) => {
     const { phone_number, password } = req.body;
 
-    try {
-        // Find the user by phone number
-        const user = await User.findOne({ where: { phone_number } });
+    User.getUserByPhoneNumber(phone_number, async (err, user) => {
+        if (err) return res.status(500).json({ message: 'Error retrieving user' });
+        if (!user) return res.status(404).json({ message: 'User not found' });
 
-        if (!user) {
-            return res.status(400).json({ message: 'Invalid phone number or password.' });
+        // Compare the provided password with the hashed password
+        const passwordMatch = await bcrypt.compare(password, user.password_hash);
+        
+        if (!passwordMatch) {
+            return res.status(401).json({ message: 'Invalid phone number or password' });
         }
 
-        // Compare password with the hashed password in the database
-        const isPasswordValid = await bcrypt.compare(password, user.password_hash);
-
-        if (!isPasswordValid) {
-            return res.status(400).json({ message: 'Invalid phone number or password.' });
-        }
-
-        // Return user data (excluding sensitive info like password)
+        // If passwords match, send success response
         res.status(200).json({
             UserId: user.UserId,
             name: user.name,
             email: user.email,
             phone_number: user.phone_number,
+            avatar_url: user.avatar_url,
             country: user.country,
             city: user.city,
-            avatar_url: user.avatar_url,
         });
-    } catch (error) {
-        console.error(error);
-        res.status(500).json({ message: 'Server error. Please try again later.' });
-    }
+    });
 };
