@@ -8,7 +8,7 @@ class Property {
         `INSERT INTO properties (
           UserId, title, description, price, type, address, zipcode, city, geom, 
           bedrooms, washrooms, area, furnished, kitchen, water, electricity, status, category
-        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ST_SetSRID(ST_MakePoint(?, ?), 4326), 
+        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ST_SetSRID(ST_MakePoint(?, ?), 32643), 
           ?, ?, ?, ?, ?, ?, ?, 'Unpaid', NULL)`,
         [userId, title, description, price, type, address, zipcode, city, geom.longitude, geom.latitude, bedrooms, washrooms, area, furnished, kitchen, water, electricity],
         (error, results) => {
