@@ -29,9 +29,9 @@ class Property {
           p.address, p.zipcode, p.city, p.bedrooms, p.washrooms, p.area, 
           p.furnished, p.kitchen, p.water, p.electricity, p.status, 
           p.category, p.created_at, p.updated_at, p.geometry AS geometry, 
-          p.IsPaid, pi.Photos 
+          p.IsPaid, pi.Photos
         FROM properties p
-        LEFT JOIN property_images pi ON p.PropertyId = pi.property_id`,
+        LEFT JOIN  property_images ON p.PropertyId = pi.property_id`,
         (error, results) => {
           if (error) {
             console.error('Error retrieving properties:', error);
@@ -41,7 +41,7 @@ class Property {
           // Group results by property ID
           const properties = {};
           results.forEach(row => {
-            const { PropertyId, UserId, title, description, price, type, address, zipcode, city, bedrooms, washrooms, area, furnished, kitchen, water, electricity, status, category, created_at, updated_at, geometry, IsPaid, Photos } = row;
+            const { PropertyId, UserId, title, description, price, type, address, zipcode, city, bedrooms, washrooms, area, furnished, kitchen, water, electricity, status, category, created_at, updated_at, geometry, IsPaid,Photos } = row;
 
             if (!properties[PropertyId]) {
               properties[PropertyId] = {
@@ -67,15 +67,15 @@ class Property {
                 updated_at,
                 geometry,
                 IsPaid,
-                photos: [] // Change this to 'photos'
+                Photos: []
               };
             }
 
-            if (Photos) {
-               properties[PropertyId].photos.push(Photos.toString('base64')); // Use 'Photos' here
+            if ({Photos}) {
+              properties[PropertyId].images.push(Photos);
             }
           });
-          console.log('API Response:', response.data);
+
           resolve(Object.values(properties)); // Return an array of properties
         }
       );
