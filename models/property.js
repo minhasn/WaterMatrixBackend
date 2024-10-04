@@ -24,8 +24,14 @@ class Property {
   static async getAll() {
     return new Promise((resolve, reject) => {
       pool.query(
-        `SELECT p.*, pi.image_url FROM properties p
-         LEFT JOIN property_images pi ON p.PropertyId = pi.property_id`,
+        `SELECT 
+          p.PropertyId, p.UserId, p.title, p.description, p.price, p.type, 
+          p.address, p.zipcode, p.city, p.bedrooms, p.washrooms, p.area, 
+          p.furnished, p.kitchen, p.water, p.electricity, p.status, 
+          p.category, p.created_at, p.updated_at, ST_AsText(p.geom) AS geometry, 
+          p.IsPaid, pi.image_url 
+        FROM properties p
+        LEFT JOIN property_images pi ON p.PropertyId = pi.property_id`,
         (error, results) => {
           if (error) {
             console.error('Error retrieving properties:', error);
@@ -35,11 +41,12 @@ class Property {
           // Group results by property ID
           const properties = {};
           results.forEach(row => {
-            const { PropertyId, title, description, price, type, address, zipcode, city, bedrooms, washrooms, area, furnished, kitchen, water, electricity, status, category, image_url } = row;
+            const { PropertyId, UserId, title, description, price, type, address, zipcode, city, bedrooms, washrooms, area, furnished, kitchen, water, electricity, status, category, created_at, updated_at, geometry, IsPaid, image_url } = row;
 
             if (!properties[PropertyId]) {
               properties[PropertyId] = {
                 PropertyId,
+                UserId,
                 title,
                 description,
                 price,
@@ -56,6 +63,10 @@ class Property {
                 electricity,
                 status,
                 category,
+                created_at,
+                updated_at,
+                geometry,
+                IsPaid,
                 images: []
               };
             }
