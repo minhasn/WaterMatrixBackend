@@ -82,6 +82,51 @@ class Property {
         );
     });
 }
+static async getById(propertyId) {
+  return new Promise((resolve, reject) => {
+    pool.query(
+      `SELECT 
+        p.PropertyId, p.UserId, p.title, p.description, p.price, p.type, 
+        p.address, p.zipcode, p.city, p.bedrooms, p.washrooms, p.area, 
+        p.furnished, p.kitchen, p.water, p.electricity, p.status, 
+        p.category, p.created_at, p.updated_at, 
+        p.geometry AS geometry, 
+        p.IsPaid, pi.Photos AS Photos
+      FROM properties p
+      LEFT JOIN property_images pi ON p.PropertyId = pi.property_id
+      WHERE p.PropertyId = ?
+      GROUP BY p.PropertyId`,
+      [propertyId],
+      (error, results) => {
+        if (error) {
+          console.error('Error retrieving property:', error);
+          return reject(error);
+        }
+
+        if (results.length === 0) {
+          return resolve(null); // Property not found
+        }
+
+        const property = results[0];
+
+        // Parse the geometry
+        if (property.geometry) {
+          property.geometry = JSON.parse(property.geometry);
+        }
+
+        // Convert Photos string to array
+        if (property.Photos) {
+          property.Photos = property.Photos.split(',');
+        } else {
+          property.Photos = [];
+        }
+
+        resolve(property);
+      }
+    );
+  });
+}
+
 }
 
 module.exports = Property;
