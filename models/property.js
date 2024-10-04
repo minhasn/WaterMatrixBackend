@@ -29,9 +29,9 @@ class Property {
           p.address, p.zipcode, p.city, p.bedrooms, p.washrooms, p.area, 
           p.furnished, p.kitchen, p.water, p.electricity, p.status, 
           p.category, p.created_at, p.updated_at, p.geometry AS geometry, 
-          p.IsPaid, pi.image_url 
+          p.IsPaid, pi.Photos
         FROM properties p
-        LEFT JOIN property_images pi ON p.PropertyId = pi.property_id`,
+        LEFT JOIN Photos ON p.PropertyId = pi.property_id`,
         (error, results) => {
           if (error) {
             console.error('Error retrieving properties:', error);
@@ -41,7 +41,7 @@ class Property {
           // Group results by property ID
           const properties = {};
           results.forEach(row => {
-            const { PropertyId, UserId, title, description, price, type, address, zipcode, city, bedrooms, washrooms, area, furnished, kitchen, water, electricity, status, category, created_at, updated_at, geometry, IsPaid, image_url } = row;
+            const { PropertyId, UserId, title, description, price, type, address, zipcode, city, bedrooms, washrooms, area, furnished, kitchen, water, electricity, status, category, created_at, updated_at, geometry, IsPaid,Photos } = row;
 
             if (!properties[PropertyId]) {
               properties[PropertyId] = {
@@ -67,12 +67,12 @@ class Property {
                 updated_at,
                 geometry,
                 IsPaid,
-                images: []
+                Photos: []
               };
             }
 
-            if (image_url) {
-              properties[PropertyId].images.push(image_url);
+            if ({Photos}) {
+              properties[PropertyId].images.push(Photos);
             }
           });
 
