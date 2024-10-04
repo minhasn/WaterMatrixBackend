@@ -61,4 +61,5 @@ const getPropertyById = async (req, res) => {
   }
 };
 
-module.exports = { addProperty, getProperties,getPropertyById };
+module.exports = { addProperty, getProperties, getPropertyById };
+ 
