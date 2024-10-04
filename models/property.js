@@ -75,7 +75,7 @@ class Property {
                properties[PropertyId].photos.push(Photos.toString('base64')); // Use 'Photos' here
             }
           });
-
+          console.log('API Response:', response.data);
           resolve(Object.values(properties)); // Return an array of properties
         }
       );
