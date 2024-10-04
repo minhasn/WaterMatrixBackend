@@ -3,7 +3,7 @@ const pool = require('../config/db');
 
 const addProperty = async (req, res) => {
   const { title, city, price, type, description, address, zipcode, bedrooms, washrooms, area, furnished, kitchen, water, electricity, userId, geom } = req.body;
-  const images = req.files.map(file => `/${file.path}`);
+  const images = req.files ? req.files.map(file => `/${file.path}`) : [];
 
   try {
     const propertyId = await Property.create({ title, city, price, type, description, address, zipcode, bedrooms, washrooms, area, furnished, kitchen, water, electricity, userId, geom });
