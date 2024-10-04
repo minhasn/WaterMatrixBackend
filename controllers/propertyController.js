@@ -13,7 +13,7 @@ const addProperty = async (req, res) => {
       const insertImagePromises = images.map(Photos => {
         return new Promise((resolve, reject) => {
           pool.query(
-            `INSERT INTO property_images (property_id, image_url) VALUES (?, ?)`,
+            `INSERT INTO property_images (property_id, Photos) VALUES (?, ?)`,
             [propertyId, Photos],
             (error) => {
               if (error) {
