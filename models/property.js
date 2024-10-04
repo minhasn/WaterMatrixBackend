@@ -72,7 +72,7 @@ class Property {
             }
 
             if (Photos) {
-              properties[PropertyId].photos.push(Photos); // Use 'Photos' here
+              properties[PropertyId].photos.push(Photos.toString('base64')); // Use 'Photos' here
             }
           });
 
