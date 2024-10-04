@@ -44,5 +44,20 @@ const getProperties = async (req, res) => {
     res.status(500).json({ error: 'Database error', details: error.message });
   }
 };
+getPropertyById = async (req, res) => {
+  try {
+    const propertyId = req.params.id;
+    const property = await Property.getById(propertyId);
 
-module.exports = { addProperty, getProperties };
+    if (!property) {
+      return res.status(404).json({ message: 'Property not found' });
+    }
+
+    res.json(property);
+  } catch (error) {
+    console.error('Error fetching property:', error);
+    res.status(500).json({ message: 'Internal server error' });
+  }
+};
+
+module.exports = { addProperty, getProperties,getPropertyById };
