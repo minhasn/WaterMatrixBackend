@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const { addProperty, getProperties } = require('../controllers/propertyController');
+const { addProperty, getProperties, getPropertyById } = require('../controllers/propertyController');
 const multer = require('multer');
 const path = require('path');
 
