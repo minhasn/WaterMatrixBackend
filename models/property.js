@@ -1,4 +1,3 @@
-// models/property.js
 const pool = require('../config/db');
 
 class Property {
@@ -24,13 +23,51 @@ class Property {
 
   static async getAll() {
     return new Promise((resolve, reject) => {
-      pool.query('SELECT * FROM properties', (error, results) => {
-        if (error) {
-          console.error('Error retrieving properties:', error);
-          return reject(error);
+      pool.query(
+        `SELECT p.*, pi.image_url FROM properties p
+         LEFT JOIN property_images pi ON p.PropertyId = pi.property_id`,
+        (error, results) => {
+          if (error) {
+            console.error('Error retrieving properties:', error);
+            return reject(error);
+          }
+
+          // Group results by property ID
+          const properties = {};
+          results.forEach(row => {
+            const { PropertyId, title, description, price, type, address, zipcode, city, bedrooms, washrooms, area, furnished, kitchen, water, electricity, status, category, image_url } = row;
+
+            if (!properties[PropertyId]) {
+              properties[PropertyId] = {
+                PropertyId,
+                title,
+                description,
+                price,
+                type,
+                address,
+                zipcode,
+                city,
+                bedrooms,
+                washrooms,
+                area,
+                furnished,
+                kitchen,
+                water,
+                electricity,
+                status,
+                category,
+                images: []
+              };
+            }
+
+            if (image_url) {
+              properties[PropertyId].images.push(image_url);
+            }
+          });
+
+          resolve(Object.values(properties)); // Return an array of properties
         }
-        resolve(results);
-      });
+      );
     });
   }
 }

@@ -1,4 +1,3 @@
-// routes/propertyRoutes.js
 const express = require('express');
 const router = express.Router();
 const { addProperty, getProperties } = require('../controllers/propertyController');

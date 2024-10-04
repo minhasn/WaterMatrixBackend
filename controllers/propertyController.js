@@ -1,15 +1,35 @@
-// controllers/propertyController.js
 const Property = require('../models/property');
 
 const addProperty = async (req, res) => {
-  const { title, city, price, type, description, address, zipcode, bedrooms, washrooms, area, furnished, kitchen, water, electricity, userId, geom } = req.body;
+  const { title, city, price, type, description, address, zipcode, bedrooms, washrooms, area, furnished, kitchen, water, electricity, userId, geom, images } = req.body;
 
   try {
-    const property = await Property.create({ title, city, price, type, description, address, zipcode, bedrooms, washrooms, area, furnished, kitchen, water, electricity, userId, geom });
-    res.status(201).json(property);
+    const propertyId = await Property.create({ title, city, price, type, description, address, zipcode, bedrooms, washrooms, area, furnished, kitchen, water, electricity, userId, geom });
+
+    // Insert images into property_images table
+    if (images && images.length > 0) {
+      const insertImagePromises = images.map(imageUrl => {
+        return new Promise((resolve, reject) => {
+          pool.query(
+            `INSERT INTO property_images (property_id, image_url) VALUES (?, ?)`,
+            [propertyId, imageUrl],
+            (error) => {
+              if (error) {
+                console.error('Error inserting image:', error);
+                return reject(error);
+              }
+              resolve();
+            }
+          );
+        });
+      });
+      await Promise.all(insertImagePromises);
+    }
+
+    res.status(201).json({ propertyId });
   } catch (error) {
     console.error('Database query error:', error.stack);
-    res.status(500).json({ error: 'Database error', details: error.message }); // Include detailed error message
+    res.status(500).json({ error: 'Database error', details: error.message });
   }
 };
 
@@ -18,8 +38,8 @@ const getProperties = async (req, res) => {
     const properties = await Property.getAll();
     res.status(200).json(properties);
   } catch (error) {
-    console.error('Database query error:', error); // Log the error for debugging
-    res.status(500).json({ error: 'Database error', details: error.message }); // Include detailed error message
+    console.error('Database query error:', error);
+    res.status(500).json({ error: 'Database error', details: error.message });
   }
 };
 
