@@ -31,7 +31,7 @@ class Property {
           p.category, p.created_at, p.updated_at, p.geometry AS geometry, 
           p.IsPaid, pi.Photos
         FROM properties p
-        LEFT JOIN Photos ON p.PropertyId = pi.property_id`,
+        LEFT JOIN  property_images ON p.PropertyId = pi.property_id`,
         (error, results) => {
           if (error) {
             console.error('Error retrieving properties:', error);
