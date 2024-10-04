@@ -28,7 +28,7 @@ class Property {
           p.PropertyId, p.UserId, p.title, p.description, p.price, p.type, 
           p.address, p.zipcode, p.city, p.bedrooms, p.washrooms, p.area, 
           p.furnished, p.kitchen, p.water, p.electricity, p.status, 
-          p.category, p.created_at, p.updated_at, ST_AsText(p.geom) AS geometry, 
+          p.category, p.created_at, p.updated_at, p.geometry AS geometry, 
           p.IsPaid, pi.image_url 
         FROM properties p
         LEFT JOIN property_images pi ON p.PropertyId = pi.property_id`,
