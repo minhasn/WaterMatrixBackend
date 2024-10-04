@@ -20,6 +20,7 @@ const addProperty = async (req, res) => {
                 console.error('Error inserting image:', error);
                 return reject(error);
               }
+              console.log('Image inserted:', results); // Log successful insert
               resolve();
             }
           );

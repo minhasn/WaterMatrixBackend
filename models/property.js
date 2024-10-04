@@ -23,64 +23,68 @@ class Property {
 
   static async getAll() {
     return new Promise((resolve, reject) => {
-      pool.query(
-        `SELECT 
-          p.PropertyId, p.UserId, p.title, p.description, p.price, p.type, 
-          p.address, p.zipcode, p.city, p.bedrooms, p.washrooms, p.area, 
-          p.furnished, p.kitchen, p.water, p.electricity, p.status, 
-          p.category, p.created_at, p.updated_at, p.geometry AS geometry, 
-          p.IsPaid, pi.Photos 
-        FROM properties p
-        LEFT JOIN property_images pi ON p.PropertyId = pi.property_id`,
-        (error, results) => {
-          if (error) {
-            console.error('Error retrieving properties:', error);
-            return reject(error);
-          }
+        pool.query(
+            `SELECT 
+                p.PropertyId, p.UserId, p.title, p.description, p.price, p.type, 
+                p.address, p.zipcode, p.city, p.bedrooms, p.washrooms, p.area, 
+                p.furnished, p.kitchen, p.water, p.electricity, p.status, 
+                p.category, p.created_at, p.updated_at, 
+                p.geometry AS geometry, 
+                p.IsPaid, 
+                GROUP_CONCAT(pi.Photos) AS Photos  
+            FROM properties p
+            LEFT JOIN property_images pi ON p.PropertyId = pi.property_id
+            GROUP BY p.PropertyId`, 
+            (error, results) => {
+                if (error) {
+                    console.error('Error retrieving properties:', error);
+                    return reject(error);
+                }
 
-          // Group results by property ID
-          const properties = {};
-          results.forEach(row => {
-            const { PropertyId, UserId, title, description, price, type, address, zipcode, city, bedrooms, washrooms, area, furnished, kitchen, water, electricity, status, category, created_at, updated_at, geometry, IsPaid, Photos } = row;
+                // Log the results to debug
+                console.log('Query Results:', results);
 
-            if (!properties[PropertyId]) {
-              properties[PropertyId] = {
-                PropertyId,
-                UserId,
-                title,
-                description,
-                price,
-                type,
-                address,
-                zipcode,
-                city,
-                bedrooms,
-                washrooms,
-                area,
-                furnished,
-                kitchen,
-                water,
-                electricity,
-                status,
-                category,
-                created_at,
-                updated_at,
-                geometry,
-                IsPaid,
-                photos: [] // Change this to 'photos'
-              };
+                const properties = {};
+                results.forEach(row => {
+                    const { PropertyId, UserId, title, description, price, type, address, zipcode, city, bedrooms, washrooms, area, furnished, kitchen, water, electricity, status, category, created_at, updated_at, geometry, IsPaid, Photos } = row;
+
+                    if (!properties[PropertyId]) {
+                        properties[PropertyId] = {
+                            PropertyId,
+                            UserId,
+                            title,
+                            description,
+                            price,
+                            type,
+                            address,
+                            zipcode,
+                            city,
+                            bedrooms,
+                            washrooms,
+                            area,
+                            furnished,
+                            kitchen,
+                            water,
+                            electricity,
+                            status,
+                            category,
+                            created_at,
+                            updated_at,
+                            geometry,
+                            IsPaid,
+                            Photos: [] // Initialize photos array
+                        };
+                    }
+
+                    if (Photos) {
+                        properties[PropertyId].Photos = Photos.split(','); // Split into an array
+                    }
+                });
+
+                resolve(Object.values(properties)); // Return an array of properties
             }
-
-            if (Photos) {
-              properties[PropertyId].photos.push(Photos.toString('base64')); // Use 'Photos' here
-            }
-          });
-
-          resolve(Object.values(properties)); // Return an array of properties
-        }
-      );
+        );
     });
-  }
 }
-
+}
 module.exports = Property;
