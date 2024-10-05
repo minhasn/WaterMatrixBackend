@@ -18,8 +18,8 @@ app.use('/api/polygons', i8_4326Routes);
 
 const PORT = process.env.PORT || 5000;
 
-app.get('/api/property', (req, res) => {
-  res.send( propertyRoutes);
+app.get('/', (req, res) => {
+  res.send('Backend is working!');
 });
 
 app.listen(PORT, () => {
