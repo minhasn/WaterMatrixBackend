@@ -1,6 +1,6 @@
 // models/i8_4326.js
 const { DataTypes } = require('sequelize');
-const sequelize = require('../config/database');
+const sequelize = require('../config/db');
 
 const I8_4326 = sequelize.define('I8_4326', {
   id_0: {
