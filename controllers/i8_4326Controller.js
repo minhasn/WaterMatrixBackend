@@ -9,7 +9,8 @@ exports.createPolygon = async (req, res) => {
     });
     res.status(201).json(polygon);
   } catch (error) {
-    res.status(500).json({ error: 'Error creating polygon' });
+    console.error('Error creating polygon:', error); // Log the actual error
+    res.status(500).json({ error: error.message || 'Error creating polygon' });
   }
 };
 
@@ -19,7 +20,8 @@ exports.getAllPolygons = async (req, res) => {
     const polygons = await I8_4326.findAll();
     res.status(200).json(polygons);
   } catch (error) {
-    res.status(500).json({ error: 'Error fetching polygons' });
+    console.error('Error fetching polygons:', error); // Log the actual error
+    res.status(500).json({ error: error.message || 'Error fetching polygons' });
   }
 };
 
@@ -33,7 +35,8 @@ exports.getPolygonById = async (req, res) => {
       res.status(404).json({ error: 'Polygon not found' });
     }
   } catch (error) {
-    res.status(500).json({ error: 'Error fetching polygon' });
+    console.error('Error fetching polygon:', error); // Log the actual error
+    res.status(500).json({ error: error.message || 'Error fetching polygon' });
   }
 };
 
@@ -58,7 +61,8 @@ exports.updatePolygon = async (req, res) => {
       res.status(404).json({ error: 'Polygon not found' });
     }
   } catch (error) {
-    res.status(500).json({ error: 'Error updating polygon' });
+    console.error('Error updating polygon:', error); // Log the actual error
+    res.status(500).json({ error: error.message || 'Error updating polygon' });
   }
 };
 
@@ -73,6 +77,7 @@ exports.deletePolygon = async (req, res) => {
       res.status(404).json({ error: 'Polygon not found' });
     }
   } catch (error) {
-    res.status(500).json({ error: 'Error deleting polygon' });
+    console.error('Error deleting polygon:', error); // Log the actual error
+    res.status(500).json({ error: error.message || 'Error deleting polygon' });
   }
 };
