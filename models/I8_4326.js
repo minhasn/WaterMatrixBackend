@@ -1,4 +1,3 @@
-// models/i8_4326.js
 const { DataTypes } = require('sequelize');
 const sequelize = require('../config/db');
 
@@ -37,16 +36,16 @@ const I8_4326 = sequelize.define('I8_4326', {
     allowNull: true,
   },
   WKT: {
-    type: DataTypes.TEXT, // WKT (Well-Known Text) format for storing geometries
+    type: DataTypes.TEXT, // WKT format for storing geometries
     allowNull: true,
   },
   geometry: {
-    type: DataTypes.GEOMETRY('POLYGON'), // Assuming your geometry field stores polygons
+    type: DataTypes.GEOMETRY('POLYGON'), // Storing polygons
     allowNull: false,
   },
 }, {
   tableName: 'I8_4326',
-  timestamps: true, // Assuming you have created_at, updated_at
+  timestamps: true, // Assuming created_at and updated_at fields
 });
 
 module.exports = I8_4326;
