@@ -1,24 +1,27 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const cors = require('cors');
-const authRoutes = require('./routes/userRoutes'); // Make sure this is the correct path
-const propertyRoutes = require('./routes/propertyRoutes');
-const propertyImageRoutes = require('./routes/propertyImageRoutes');
+const authRoutes = require('./routes/userRoutes'); // User routes
+const propertyRoutes = require('./routes/propertyRoutes'); // Property routes
+const propertyImageRoutes = require('./routes/propertyImageRoutes'); // Property image routes
+const plotRoutes = require('./routes/plotRoute'); // Plot routes for background map
 
 const app = express();
 
 app.use(bodyParser.json());
 app.use(cors());
 
-// Adjusted base path for user-related routes
-app.use('/api/auth', authRoutes); // User routes prefixed with /api/auth
-app.use('/api/property', propertyRoutes); // Property routes prefixed with /api/property
-app.use('/api/propertyImages', propertyImageRoutes); // Corrected to plural for consistency
+// Routes
+app.use('/api/auth', authRoutes); // User-related routes
+app.use('/api/property', propertyRoutes); // Property-related routes
+app.use('/api/propertyImages', propertyImageRoutes); // Property image routes
+app.use('/api/plots', plotRoutes); // Plot routes for background map
 
 const PORT = process.env.PORT || 5000;
 
+// Optional: Test route for property
 app.get('/api/property', (req, res) => {
-  res.send( propertyRoutes);
+  res.send(propertyRoutes);
 });
 
 app.listen(PORT, () => {
