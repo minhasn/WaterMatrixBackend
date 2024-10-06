@@ -1,34 +1,25 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const cors = require('cors');
-const authRoutes = require('./routes/authRoutes');
+const authRoutes = require('./routes/userRoutes'); // Make sure this is the correct path
 const propertyRoutes = require('./routes/propertyRoutes');
-const app = express();
 const propertyImageRoutes = require('./routes/propertyImageRoutes');
-const chatRoutes = require('./routes/chatRoutes');
-const messageRoutes = require('./routes/messageRoutes');
-const userFavoriteRoutes = require('./routes/userFavoriteRoutes');
-const userContactedPropertyRoutes = require('./routes/userContactedPropertyRoutes');
-const otpRoutes = require('./routes/otpRoutes');
 
+const app = express();
 
 app.use(bodyParser.json());
 app.use(cors());
 
-app.use(express.json());
+// Adjusted base path for user-related routes
+app.use('/api/auth', authRoutes); // User routes prefixed with /api/auth
+app.use('/api/property', propertyRoutes); // Property routes prefixed with /api/property
+app.use('/api/propertyImages', propertyImageRoutes); // Corrected to plural for consistency
 
-app.use('/auth', authRoutes);
-app.use('/property', propertyRoutes);
+const PORT = process.env.PORT || 5000;
 
-app.use('/api', propertyRoutes);
-app.use('/api', propertyImageRoutes);
-app.use('/api', chatRoutes);
-app.use('/api', messageRoutes);
-app.use('/api', userFavoriteRoutes);
-app.use('/api', userContactedPropertyRoutes);
-app.use('/api', otpRoutes);
-
-const PORT = process.env.PORT || 3000;
+app.get('/', (req, res) => {
+    res.send('Backend is working!');
+});
 
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
