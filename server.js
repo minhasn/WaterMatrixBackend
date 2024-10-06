@@ -4,7 +4,6 @@ const cors = require('cors');
 const authRoutes = require('./routes/authRoutes');
 const propertyRoutes = require('./routes/propertyRoutes');
 const app = express();
-const propertyRoutes = require('./routes/propertyRoutes');
 const propertyImageRoutes = require('./routes/propertyImageRoutes');
 const chatRoutes = require('./routes/chatRoutes');
 const messageRoutes = require('./routes/messageRoutes');
