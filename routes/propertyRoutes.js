@@ -7,8 +7,8 @@ const path = require('path');
 // Set up storage for uploaded images
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
-    const uploadPath = path.join(__dirname, '../uploads'); // Using dynamic path
-    console.log('Uploading file to:', uploadPath); // Debugging log
+    const uploadPath = path.join(__dirname, '../uploads');  // Using dynamic path
+    console.log('Uploading file to:', uploadPath);  // Debugging log
     cb(null, uploadPath);
   },
   filename: (req, file, cb) => {
@@ -17,10 +17,10 @@ const storage = multer.diskStorage({
 });
 
 const upload = multer({ storage });
-
 // Route to add a property with images
-router.post('/addproperty', upload.array('images', 5), addProperty); // Allow up to 5 images
-router.get('/properties', getProperties); // Get all properties
-router.get('/:id', getPropertyById); // Get property by ID
+router.post('/addproperty', upload.array('images',5), addProperty);  // Allow up to 5 images
+router.get('/properties', getProperties);    
+router.get('/properties/:id', getPropertyById);
+
 
 module.exports = router;
