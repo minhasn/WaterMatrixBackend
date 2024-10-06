@@ -15,7 +15,7 @@ class Property {
             console.error('Error inserting property:', error);
             return reject(error);
           }
-          resolve(results.insertId); // Return the PropertyId
+          resolve(results.insertId);
         }
       );
     });

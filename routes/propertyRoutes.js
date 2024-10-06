@@ -14,6 +14,8 @@ const storage = multer.diskStorage({
   }
 });
 
+
+
 const upload = multer({ storage });
 
 // Route to add a property with images
