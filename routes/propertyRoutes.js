@@ -20,7 +20,7 @@ const upload = multer({ storage });
 
 // Route to add a property with images
 router.post('/addproperty', upload.array('images', 5), addProperty); // Allow up to 5 images
-router.get('/', getProperties); // Get all properties
+router.get('/properties', getProperties); // Get all properties
 router.get('/:id', getPropertyById); // Get property by ID
 
 module.exports = router;
