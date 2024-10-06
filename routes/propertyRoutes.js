@@ -7,16 +7,16 @@ const path = require('path');
 // Set up storage for uploaded images
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
-    const uploadPath = path.join(__dirname, '../uploads'); // Ensure the path is correct
-    cb(null, uploadPath);  // Use the absolute path to save files
+    const uploadPath = path.join(__dirname, '../uploads'); // Correct relative path to the uploads folder
+    console.log('Saving files to:', uploadPath); // Debugging: logs the actual path
+    cb(null, uploadPath); // This ensures the files go to the correct directory
   },
   filename: (req, file, cb) => {
-    cb(null, `${Date.now()}-${file.originalname}`);
+    cb(null, `${Date.now()}-${file.originalname}`); // Unique file name
   }
 });
 
 const upload = multer({ storage });
-
 // Route to add a property with images
 router.post('/addproperty', upload.array('images',5), addProperty);  // Allow up to 5 images
 router.get('/properties', getProperties);    
