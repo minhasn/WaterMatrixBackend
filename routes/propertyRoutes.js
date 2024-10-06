@@ -7,7 +7,7 @@ const path = require('path');
 // Set up storage for uploaded images
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
-    const uploadPath = path.join(__dirname, '../uploads');  // Using dynamic path
+    const uploadPath = path.join(__dirname, 'main/uploads');  // Using dynamic path
     console.log('Uploading file to:', uploadPath);  // Debugging log
     cb(null, uploadPath);
   },
