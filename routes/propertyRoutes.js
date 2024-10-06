@@ -7,12 +7,13 @@ const path = require('path');
 // Set up storage for uploaded images
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
-    cb(null, 'uploads/'); // Folder to save images
+    cb(null, path.join(__dirname, 'uploads'));  // Use absolute path
   },
   filename: (req, file, cb) => {
-    cb(null, `${Date.now()}-${file.originalname}`); // Unique file name
+    cb(null, `${Date.now()}-${file.originalname}`);
   }
 });
+
 
 
 
