@@ -4,7 +4,7 @@ const cors = require('cors');
 const authRoutes = require('./routes/userRoutes'); // User routes
 const propertyRoutes = require('./routes/propertyRoutes'); // Property routes
 const propertyImageRoutes = require('./routes/propertyImageRoutes'); // Property image routes
-const plotRoutes = require('./routes/plotRoute'); // Plot routes for background map
+const plotRoutes = require('./routes/plotRoutes'); // Plot routes for background map
 
 const app = express();
 
