@@ -1,26 +1,36 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const cors = require('cors');
-const authRoutes = require('./routes/userRoutes'); // Adjust this path as necessary
+const authRoutes = require('./routes/authRoutes');
 const propertyRoutes = require('./routes/propertyRoutes');
-const i8_4326Routes = require('./routes/i8_4326Routes');
-
+const express = require('express');
 const app = express();
+const propertyRoutes = require('./routes/propertyRoutes');
+const propertyImageRoutes = require('./routes/propertyImageRoutes');
+const chatRoutes = require('./routes/chatRoutes');
+const messageRoutes = require('./routes/messageRoutes');
+const userFavoriteRoutes = require('./routes/userFavoriteRoutes');
+const userContactedPropertyRoutes = require('./routes/userContactedPropertyRoutes');
+const otpRoutes = require('./routes/otpRoutes');
+
 
 app.use(bodyParser.json());
 app.use(cors());
-app.use('/uploads', express.static('uploads')); // Serve uploaded files
 
-// Routes
-app.use('/api/auth', authRoutes); // User routes prefixed with /api/auth
-app.use('/api/property', propertyRoutes); // Property routes prefixed with /api/property
-app.use('/api/polygons', i8_4326Routes);
+app.use(express.json());
 
-const PORT = process.env.PORT || 5000;
+app.use('/auth', authRoutes);
+app.use('/property', propertyRoutes);
 
-app.get('/api/property', (req, res) => {
-  res.send( propertyRoutes);
-});
+app.use('/api', propertyRoutes);
+app.use('/api', propertyImageRoutes);
+app.use('/api', chatRoutes);
+app.use('/api', messageRoutes);
+app.use('/api', userFavoriteRoutes);
+app.use('/api', userContactedPropertyRoutes);
+app.use('/api', otpRoutes);
+
+const PORT = process.env.PORT || 3000;
 
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
