@@ -10,6 +10,4 @@ const getPlots = async (req, res) => {
   }
 };
 
-module.exports = {
-  getPlots,
-};
+module.exports = {getPlots};
