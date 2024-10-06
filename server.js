@@ -12,6 +12,7 @@ app.use(bodyParser.json());
 app.use(cors());
 
 // Routes
+app.use(express.static(path.join(__dirname, './uploads')));
 app.use('/api/auth', authRoutes); // User-related routes
 app.use('/api/property', propertyRoutes); // Property-related routes
 app.use('/api/propertyImages', propertyImageRoutes); // Property image routes
