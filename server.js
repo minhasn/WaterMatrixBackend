@@ -1,6 +1,7 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const cors = require('cors');
+const path = require('path');
 const authRoutes = require('./routes/userRoutes'); // User routes
 const propertyRoutes = require('./routes/propertyRoutes'); // Property routes
 const propertyImageRoutes = require('./routes/propertyImageRoutes'); // Property image routes
