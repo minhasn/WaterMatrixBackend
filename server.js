@@ -1,25 +1,24 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const cors = require('cors');
-const authRoutes = require('./routes/userRoutes'); // Adjust this path as necessary
+const authRoutes = require('./routes/userRoutes'); // Make sure this is the correct path
 const propertyRoutes = require('./routes/propertyRoutes');
-const i8_4326Routes = require('./routes/i8_4326Routes');
+const propertyImageRoutes = require('./routes/propertyImageRoutes');
 
 const app = express();
 
 app.use(bodyParser.json());
 app.use(cors());
-app.use('/uploads', express.static('uploads')); // Serve uploaded files
 
-// Routes
+// Adjusted base path for user-related routes
 app.use('/api/auth', authRoutes); // User routes prefixed with /api/auth
 app.use('/api/property', propertyRoutes); // Property routes prefixed with /api/property
-app.use('/api/polygons', i8_4326Routes);
+app.use('/api/propertyImages', propertyImageRoutes); // Corrected to plural for consistency
 
 const PORT = process.env.PORT || 5000;
 
-app.get('/', (req, res) => {
-  res.send('Backend is working!');
+app.get('/api/property', (req, res) => {
+  res.send( propertyRoutes);
 });
 
 app.listen(PORT, () => {
