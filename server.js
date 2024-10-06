@@ -3,7 +3,6 @@ const bodyParser = require('body-parser');
 const cors = require('cors');
 const authRoutes = require('./routes/authRoutes');
 const propertyRoutes = require('./routes/propertyRoutes');
-const express = require('express');
 const app = express();
 const propertyRoutes = require('./routes/propertyRoutes');
 const propertyImageRoutes = require('./routes/propertyImageRoutes');
