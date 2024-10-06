@@ -1,4 +1,4 @@
-import { getAllPlots } from "../models/PlotModel";
+import { getAllPlots } from '../services/PlotService';
 
 const getPlots = async (req, res) => {
   try {
