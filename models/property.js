@@ -90,12 +90,16 @@ static async getById(propertyId) {
         p.address, p.zipcode, p.city, p.bedrooms, p.washrooms, p.area, 
         p.furnished, p.kitchen, p.water, p.electricity, p.status, 
         p.category, p.created_at, p.updated_at, 
-        p.geometry AS geometry, 
-        p.IsPaid, pi.Photos AS Photos
+        ST_AsText(p.geometry) AS geometry, 
+        GROUP_CONCAT(pi.Photos) AS Photos
       FROM properties p
       LEFT JOIN property_images pi ON p.PropertyId = pi.property_id
       WHERE p.PropertyId = ?
-      GROUP BY p.PropertyId`,
+      GROUP BY 
+        p.PropertyId, p.UserId, p.title, p.description, p.price, p.type, 
+        p.address, p.zipcode, p.city, p.bedrooms, p.washrooms, p.area, 
+        p.furnished, p.kitchen, p.water, p.electricity, p.status, 
+        p.category, p.created_at, p.updated_at`,
       [propertyId],
       (error, results) => {
         if (error) {
@@ -116,7 +120,7 @@ static async getById(propertyId) {
 
         // Convert Photos string to array
         if (property.Photos) {
-          property.Photos = property.Photos.split(',');
+          property.Photos = property.Photos.split(','); // Split concatenated string into array
         } else {
           property.Photos = [];
         }
@@ -126,7 +130,6 @@ static async getById(propertyId) {
     );
   });
 }
-
 }
 
 module.exports = Property;

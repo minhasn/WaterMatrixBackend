@@ -8,6 +8,7 @@ const getAllPlots = async () => {
       FROM i_8_plot_4326_uni
     `);
     return rows;
+   
   } catch (error) {
     throw new Error('Error fetching plot data: ' + error.message);
   }
