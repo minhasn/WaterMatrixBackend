@@ -113,14 +113,6 @@ static async getById(propertyId) {
 
         const property = results[0];
 
-      
-
-        // Convert Photos string to array
-        if (property.Photos) {
-          property.Photos = property.Photos.split(','); // Split concatenated string into array
-        } else {
-          property.Photos = [];
-        }
 
         resolve(property);
       }
