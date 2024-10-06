@@ -2,19 +2,22 @@ const Property = require('../models/property');
 const pool = require('../config/db');
 
 const addProperty = async (req, res) => {
-  const { title, city, price, type, description, address, zipcode, bedrooms, washrooms, area, furnished, kitchen, water, electricity, userId, geom } = req.body;
+  const { title, city, price, type, description, address, zipcode, bedrooms, washrooms, area, furnished, kitchen, water, electricity, userId } = req.body;
+  const longitude = parseFloat(req.body.longitude); // Assuming you send these in the request body
+  const latitude = parseFloat(req.body.latitude);
+  const geometry = { longitude, latitude }; // Constructing geom object
   const images = req.files.map(file => `/${file.path}`);
 
   try {
-    const propertyId = await Property.create({ title, city, price, type, description, address, zipcode, bedrooms, washrooms, area, furnished, kitchen, water, electricity, userId, geom });
+    const propertyId = await Property.create({ title, city, price, type, description, address, zipcode, bedrooms, washrooms, area, furnished, kitchen, water, electricity, userId, geometry });
 
     // Insert images into property_images table
     if (images.length > 0) {
-      const insertImagePromises = images.map(Photos => {
+      const insertImagePromises = images.map(photo => {
         return new Promise((resolve, reject) => {
           pool.query(
             `INSERT INTO property_images (property_id, Photos) VALUES (?, ?)`,
-            [propertyId, Photos],
+            [propertyId, photo],
             (error) => {
               if (error) {
                 console.error('Error inserting image:', error);
@@ -34,7 +37,6 @@ const addProperty = async (req, res) => {
     res.status(500).json({ error: 'Database error', details: error.message });
   }
 };
-
 const getProperties = async (req, res) => {
   try {
     const properties = await Property.getAll();
