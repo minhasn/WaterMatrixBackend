@@ -7,7 +7,7 @@ class Property {
         `INSERT INTO properties (
           UserId, title, description, price, type, address, zipcode, city, geometry, 
           bedrooms, washrooms, area, furnished, kitchen, water, electricity, status, category
-        ) VALUES (?, ?, ?, ?, ?, ?, ?, ? ,ST_GeomFromText('POINT(? ?)', 4326) , 
+        ) VALUES (?, ?, ?, ?, ?, ?, ?, ? ,ST_GeomFromText('POINT(lon lat)', 4326)) , 
           ?, ?, ?, ?, ?, ?, ?, 'IsPaid', NULL)`,
         [userId, title, description, price, type, address, zipcode, city, geometry.longitude, geometry.latitude, bedrooms, washrooms, area, furnished, kitchen, water, electricity],
         (error, results) => {
