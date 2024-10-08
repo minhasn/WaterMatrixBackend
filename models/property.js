@@ -1,7 +1,7 @@
 const pool = require('../config/db');
 
 class Property {
-  static async create({ title, city, price, type, description, address, zipcode, bedrooms, washrooms, area, furnished, kitchen, water, electricity, userId, geomtry }) {
+  static async create({ title, city, price, type, description, address, zipcode, bedrooms, washrooms, area, furnished, kitchen, water, electricity, userId, geometry }) {
     return new Promise((resolve, reject) => {
       pool.query(
         `INSERT INTO properties (
