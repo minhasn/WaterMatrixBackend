@@ -5,25 +5,29 @@ const addProperty = async (req, res) => {
   const { title, city, price, type, description, address, zipcode, bedrooms, washrooms, area, furnished, kitchen, water, electricity, UserId } = req.body;
   const longitude = parseFloat(req.body.longitude); // Ensure these are sent in the request
   const latitude = parseFloat(req.body.latitude);
-  const geometry = { longitude, latitude };
+  const geom = { longitude, latitude };
   const images = req.files.map(file => `/${file.path}`);
 
   try {
-    const propertyId = await Property.create({ title, city, price, type, description, address, zipcode, bedrooms, washrooms, area, furnished, kitchen, water, electricity, UserId, geometry });
+    const propertyId = await Property.create({ title, city, price, type, description, address, zipcode, bedrooms, washrooms, area, furnished, kitchen, water, electricity, userId, geometry });
 
-  if (images.length > 0) {
-  const imageValues = images.map((photo) => [propertyId, photo]);
-  await new Promise((resolve, reject) => {
-    const query = `INSERT INTO property_images (property_id, Photos) VALUES ?`;
-    pool.query(query, [imageValues], (error) => {
-      if (error) {
-        console.error('Error inserting images:', error);
-        return reject(error);
-      }
-      resolve();
-    });
-  });
-
+    if (images.length > 0) {
+      const insertImagePromises = images.map(photo => {
+        return new Promise((resolve, reject) => {
+          pool.query(
+            `INSERT INTO property_images (property_id, Photos) VALUES (?, ?)`,
+            [propertyId, photo],
+            (error) => {
+              if (error) {
+                console.error('Error inserting image:', error);
+                return reject(error);
+              }
+              resolve();
+            }
+          );
+        });
+      });
+      await Promise.all(insertImagePromises);
     }
 
     res.status(201).json({ propertyId });
