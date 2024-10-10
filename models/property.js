@@ -5,15 +5,8 @@ class Property {
     return new Promise((resolve, reject) => {
       pool.query(
         `INSERT INTO properties (
-<<<<<<< HEAD
          PropertyId, UserId, title, description, price, type, address, zipcode, city, bedrooms, washrooms, area, furnished, kitchen, water, electricity, status, category, created_at, updated_at, geometry, IsPaid)
 VALUES(0, 0, '', '', 0, '', '', '', '', 0, 0, 0, 0, 0, 0, 0, 'Unpaid', '', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, ?, 0)`,
-=======
-          UserId, title, description, price, type, address, zipcode, city, geometry, 
-          bedrooms, washrooms, area, furnished, kitchen, water, electricity, status, category
-        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ST_SetSRID(ST_MakePoint(?, ?), 32643), 
-          ?, ?, ?, ?, ?, ?, ?, 'IsPaid', NULL)`,
->>>>>>> e785e7c3e6d6d41189637e9643a3f45e1c3dbb90
         [UserId, title, description, price, type, address, zipcode, city, geometry.longitude, geometry.latitude, bedrooms, washrooms, area, furnished, kitchen, water, electricity],
         (error, results) => {
           if (error) {
