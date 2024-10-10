@@ -2,14 +2,14 @@ const Property = require('../models/property');
 const pool = require('../config/db');
 
 const addProperty = async (req, res) => {
-  const { title, city, price, type, description, address, zipcode, bedrooms, washrooms, area, furnished, kitchen, water, electricity, userId } = req.body;
+  const { title, city, price, type, description, address, zipcode, bedrooms, washrooms, area, furnished, kitchen, water, electricity, UserId } = req.body;
   const longitude = parseFloat(req.body.longitude); // Ensure these are sent in the request
   const latitude = parseFloat(req.body.latitude);
   const geometry = { longitude, latitude };
   const images = req.files.map(file => `/${file.path}`);
 
   try {
-    const propertyId = await Property.create({ title, city, price, type, description, address, zipcode, bedrooms, washrooms, area, furnished, kitchen, water, electricity, userId, geometry });
+    const propertyId = await Property.create({ title, city, price, type, description, address, zipcode, bedrooms, washrooms, area, furnished, kitchen, water, electricity, UserId, geometry });
 
   if (images.length > 0) {
   const imageValues = images.map((photo) => [propertyId, photo]);

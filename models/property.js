@@ -1,13 +1,13 @@
 const pool = require('../config/db');
 
 class Property {
-  static async create({ title, city, price, type, description, address, zipcode, bedrooms, washrooms, area, furnished, kitchen, water, electricity, userId, geometry }) {
+  static async create({ title, city, price, type, description, address, zipcode, bedrooms, washrooms, area, furnished, kitchen, water, electricity, UserId, geometry }) {
     return new Promise((resolve, reject) => {
       pool.query(
         `INSERT INTO properties (
          PropertyId, UserId, title, description, price, type, address, zipcode, city, bedrooms, washrooms, area, furnished, kitchen, water, electricity, status, category, created_at, updated_at, geometry, IsPaid)
 VALUES(0, 0, '', '', 0, '', '', '', '', 0, 0, 0, 0, 0, 0, 0, 'Unpaid', '', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, ?, 0)`,
-        [userId, title, description, price, type, address, zipcode, city, geometry.longitude, geometry.latitude, bedrooms, washrooms, area, furnished, kitchen, water, electricity],
+        [UserId, title, description, price, type, address, zipcode, city, geometry.longitude, geometry.latitude, bedrooms, washrooms, area, furnished, kitchen, water, electricity],
         (error, results) => {
           if (error) {
             console.error('Error inserting property:', error);
