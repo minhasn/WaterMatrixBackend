@@ -2,33 +2,8 @@ const Property = require('../models/property');
 const pool = require('../config/db');
 
 const addProperty = async (req, res) => {
-  const { 
-    title, 
-    city, 
-    price, 
-    type, 
-    description, 
-    address, 
-    zipcode, 
-    bedrooms, 
-    washrooms, 
-    area, 
-    furnished, 
-    kitchen, 
-    water, 
-    electricity, 
-    UserId 
-  } = req.body;
-
-  const longitude = parseFloat(req.body.longitude);
-  const latitude = parseFloat(req.body.latitude);
-
-  const geometry = { longitude, latitude };
-
-  const images = req.files.map(file => `/${file.path}`);
-
   try {
-    const propertyId = await Property.create({ 
+    const { 
       title, 
       city, 
       price, 
@@ -43,9 +18,40 @@ const addProperty = async (req, res) => {
       kitchen, 
       water, 
       electricity, 
-      UserId, 
-      geometry
-    });
+      UserId 
+    } = req.body;
+
+    const parsedData = {
+      title,
+      city,
+      price: parseFloat(price),
+      type,
+      description,
+      address,
+      zipcode,
+      bedrooms: parseInt(bedrooms, 10),
+      washrooms: parseInt(washrooms, 10),
+      area: parseFloat(area),
+      furnished: furnished === 'true' || furnished === true ? 1 : 0,
+      kitchen: kitchen === 'true' || kitchen === true ? 1 : 0,
+      water: water === 'true' || water === true ? 1 : 0,
+      electricity: electricity === 'true' || electricity === true ? 1 : 0,
+      UserId: parseInt(UserId, 10),
+      geometry: {
+        longitude: parseFloat(req.body.longitude),
+        latitude: parseFloat(req.body.latitude)
+      }
+    };
+
+    console.log('Parsed property data:', JSON.stringify(parsedData, null, 2));
+
+    if (isNaN(parsedData.geometry.longitude) || isNaN(parsedData.geometry.latitude)) {
+      return res.status(400).json({ error: 'Invalid longitude or latitude' });
+    }
+
+    const propertyId = await Property.create(parsedData);
+
+    const images = req.files.map(file => `/${file.path}`);
 
     if (images.length > 0) {
       const insertImagePromises = images.map(photo => {
