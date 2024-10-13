@@ -21,6 +21,8 @@ class Property {
         geometry.longitude, geometry.latitude
       ];
 
+      console.log('Inserting property with values:', JSON.stringify(values, null, 2));
+
       pool.query(query, values, (error, results) => {
         if (error) {
           console.error('Error inserting property:', error);
