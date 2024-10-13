@@ -5,7 +5,7 @@ const addProperty = async (req, res) => {
   const { title, city, price, type, description, address, zipcode, bedrooms, washrooms, area, furnished, kitchen, water, electricity, UserId } = req.body;
   const longitude = parseFloat(req.body.longitude); // Ensure these are sent in the request
   const latitude = parseFloat(req.body.latitude);
-  const geom = { longitude, latitude };
+  const geometry = { longitude, latitude };
   const images = req.files.map(file => `/${file.path}`);
 
   try {
