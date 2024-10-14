@@ -1,4 +1,3 @@
-Property Controller.js 
 const Property = require('../models/property');
 const pool = require('../config/db');
 
