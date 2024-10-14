@@ -1,3 +1,4 @@
+Property Controller.js 
 const Property = require('../models/property');
 const pool = require('../config/db');
 
@@ -6,7 +7,7 @@ const addProperty = async (req, res) => {
   const longitude = parseFloat(req.body.longitude); // Ensure these are sent in the request
   const latitude = parseFloat(req.body.latitude);
   const geom = { longitude, latitude };
-  const images = req.files.map(file => `/${file.path}`);
+  const images = req.files.map(file => /${file.path});
 
   try {
     const propertyId = await Property.create({ title, city, price, type, description, address, zipcode, bedrooms, washrooms, area, furnished, kitchen, water, electricity, userId, geometry });
@@ -15,7 +16,7 @@ const addProperty = async (req, res) => {
       const insertImagePromises = images.map(photo => {
         return new Promise((resolve, reject) => {
           pool.query(
-            `INSERT INTO property_images (property_id, Photos) VALUES (?, ?)`,
+            INSERT INTO property_images (property_id, Photos) VALUES (?, ?),
             [propertyId, photo],
             (error) => {
               if (error) {
@@ -63,4 +64,3 @@ const getPropertyById = async (req, res) => {
 };
 
 module.exports = { addProperty, getProperties, getPropertyById };
-
