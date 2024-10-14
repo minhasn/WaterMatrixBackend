@@ -9,7 +9,7 @@ const addProperty = async (req, res) => {
   const images = req.files.map(file => `/${file.path}`);
 
   try {
-    const propertyId = await Property.create({ title, city, price, type, description, address, zipcode, bedrooms, washrooms, area, furnished, kitchen, water, electricity, userId, geometry });
+    const propertyId = await Property.create({ title, city, price, type, description, address, zipcode, bedrooms, washrooms, area, furnished, kitchen, water, electricity, UserId, geometry });
 
     if (images.length > 0) {
       const insertImagePromises = images.map(photo => {
