@@ -3,13 +3,13 @@ const pool = require('../config/db');
 
 const addProperty = async (req, res) => {
   const { title, city, price, type, description, address, zipcode, bedrooms, washrooms, area, furnished, kitchen, water, electricity, UserId } = req.body;
-  const longitude = parseFloat(req.body.longitude); // Ensure these are sent in the request
+  const longitude = parseFloat(req.body.longitude);
   const latitude = parseFloat(req.body.latitude);
-  const geometry = { longitude, latitude };
+  const geometryPoint = `POINT(${longitude} ${latitude})`;
   const images = req.files.map(file => `/${file.path}`);
 
   try {
-    const propertyId = await Property.create({ title, city, price, type, description, address, zipcode, bedrooms, washrooms, area, furnished, kitchen, water, electricity, UserId, geometry });
+    const propertyId = await Property.create({ title, city, price, type, description, address, zipcode, bedrooms, washrooms, area, furnished, kitchen, water, electricity, UserId, geometryPoint });
 
     if (images.length > 0) {
       const insertImagePromises = images.map(photo => {
