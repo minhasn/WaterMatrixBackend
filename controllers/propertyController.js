@@ -2,7 +2,7 @@ const Property = require('../models/property');
 const pool = require('../config/db');
 
 const addProperty = async (req, res) => {
-  const { title, city, price, type, description, address, zipcode, bedrooms, washrooms, area, furnished, kitchen, water, electricity, UserId } = req.body;
+  const { title, city, price, type, description, address, zipcode, bedrooms, washrooms, area, UserId } = req.body;
   const furnished = req.body.furnished === 'true' ? 1 : 0;
   const kitchen = req.body.kitchen === 'true' ? 1 : 0;
   const water = req.body.water === 'true' ? 1 : 0;
