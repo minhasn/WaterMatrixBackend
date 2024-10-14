@@ -58,17 +58,6 @@ const getProperties = async (req, res) => {
   }
 };
 
-const propertiesWithImages = properties.map(property => {
-  if (property.Photos) {
-    
-    const base64Image = Buffer.from(property.Photos).toString('base64');
-
-    // Append the base64 image as a data URL (for use in the img tag on frontend)
-    property.photoUrl = `data:image/jpeg;base64,${base64Image}`;  // Adjust MIME type if it's PNG, etc.
-  }
-  return property;
-});
-
 const getPropertyById = async (req, res) => {
   try {
     const propertyId = req.params.id;
