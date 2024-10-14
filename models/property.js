@@ -30,85 +30,59 @@ static async create({ title, city, price, type, description, address, zipcode, b
   });
 }
 
-  static async getAll() {
-    return new Promise((resolve, reject) => {
-        pool.query(
-            `SELECT 
-              p.PropertyId, p.UserId, p.title, p.description, p.price, p.type, 
-              p.address, p.zipcode, p.city, p.bedrooms, p.washrooms, p.area, 
-              p.furnished, p.kitchen, p.water, p.electricity, p.status, 
-              p.category, p.created_at, p.updated_at, p.geometry AS geometry, 
-              p.IsPaid, pi.Photos
-            FROM properties p
-            LEFT JOIN property_images pi ON p.PropertyId = pi.property_id`,
-            (error, results) => {
-                if (error) {
-                    console.error('Error retrieving properties:', error);
-                    return reject(error);
-                }
+static async getAll() {
+  return new Promise((resolve, reject) => {
+    pool.query(
+      `SELECT 
+        p.*, 
+        ST_X(p.geometry) AS longitude,
+        ST_Y(p.geometry) AS latitude,
+        pi.Photos
+      FROM properties p
+      LEFT JOIN property_images pi ON p.PropertyId = pi.property_id`,
+      (error, results) => {
+        if (error) {
+          console.error('Error retrieving properties:', error);
+          return reject(error);
+        }
 
-                // Group results by property ID
-                const properties = {};
-                results.forEach(row => {
-                    const { PropertyId, UserId, title, description, price, type, address, zipcode, city, bedrooms, washrooms, area, furnished, kitchen, water, electricity, status, category, created_at, updated_at, geometry, IsPaid, Photos } = row;
+        // Group results by property ID
+        const properties = {};
+        results.forEach(row => {
+          const { PropertyId, longitude, latitude, Photos, ...rest } = row;
 
-                    if (!properties[PropertyId]) {
-                        properties[PropertyId] = {
-                            PropertyId,
-                            UserId,
-                            title,
-                            description,
-                            price,
-                            type,
-                            address,
-                            zipcode,
-                            city,
-                            bedrooms,
-                            washrooms,
-                            area,
-                            furnished,
-                            kitchen,
-                            water,
-                            electricity,
-                            status,
-                            category,
-                            created_at,
-                            updated_at,
-                            geometry,
-                            IsPaid,
-                            Photos: [] // Initialize Photos array
-                        };
-                    }
+          if (!properties[PropertyId]) {
+            properties[PropertyId] = {
+              ...rest,
+              PropertyId,
+              geometry: { x: longitude, y: latitude },
+              Photos: []
+            };
+          }
 
-                    // Check if Photos exists and push it to the Photos array
-                    if (Photos) {
-                        properties[PropertyId].Photos.push(Photos); // Ensure we're pushing into the right array
-                    }
-                });
+          if (Photos) {
+            properties[PropertyId].Photos.push(Photos);
+          }
+        });
 
-                resolve(Object.values(properties)); // Return an array of properties
-            }
-        );
-    });
+        resolve(Object.values(properties));
+      }
+    );
+  });
 }
+
 static async getById(propertyId) {
   return new Promise((resolve, reject) => {
     pool.query(
       `SELECT 
-        p.PropertyId, p.UserId, p.title, p.description, p.price, p.type, 
-        p.address, p.zipcode, p.city, p.bedrooms, p.washrooms, p.area, 
-        p.furnished, p.kitchen, p.water, p.electricity, p.status, 
-        p.category, p.created_at, p.updated_at, 
-        p.geometry AS geometry, 
+        p.*, 
+        ST_X(p.geometry) AS longitude,
+        ST_Y(p.geometry) AS latitude,
         GROUP_CONCAT(pi.Photos) AS Photos
       FROM properties p
       LEFT JOIN property_images pi ON p.PropertyId = pi.property_id
       WHERE p.PropertyId = ?
-      GROUP BY 
-        p.PropertyId, p.UserId, p.title, p.description, p.price, p.type, 
-        p.address, p.zipcode, p.city, p.bedrooms, p.washrooms, p.area, 
-        p.furnished, p.kitchen, p.water, p.electricity, p.status, 
-        p.category, p.created_at, p.updated_at`,
+      GROUP BY p.PropertyId`,
       [propertyId],
       (error, results) => {
         if (error) {
@@ -121,13 +95,23 @@ static async getById(propertyId) {
         }
 
         const property = results[0];
+        property.geometry = { 
+          x: property.longitude, 
+          y: property.latitude 
+        };
+        delete property.longitude;
+        delete property.latitude;
 
+        if (property.Photos) {
+          property.Photos = property.Photos.split(',');
+        } else {
+          property.Photos = [];
+        }
 
         resolve(property);
       }
     );
   });
-}
 }
 
 module.exports = Property;
