@@ -6,6 +6,9 @@ static async create({
   bedrooms, washrooms, area, furnished, kitchen, water, 
   electricity, UserId, geometry, category 
 }) {
+  
+  const geometry = `POINT(${longitude} ${latitude})`;
+  
   return new Promise((resolve, reject) => {
     pool.query(
       `INSERT INTO properties (
