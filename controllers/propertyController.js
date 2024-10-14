@@ -9,7 +9,7 @@ const addProperty = async (req, res) => {
   const electricity = req.body.electricity === 'true' ? 1 : 0;
   const longitude = parseFloat(req.body.longitude);
   const latitude = parseFloat(req.body.latitude);
-  const geometry = `POINT(${longitude} ${latitude})`;
+  //const geometry = `POINT(${longitude} ${latitude})`;
   
   if (isNaN(longitude) || isNaN(latitude)) {
     return res.status(400).json({ error: 'Invalid longitude or latitude' });
@@ -20,7 +20,7 @@ const addProperty = async (req, res) => {
     const propertyId = await Property.create({ 
       title, city, price, type, description, address, zipcode, 
       bedrooms, washrooms, area, furnished, kitchen, water, 
-      electricity, UserId, geometry,
+      electricity, UserId, geometry, longitude, latitude
     });
 
     if (images.length > 0) {
