@@ -1,23 +1,34 @@
 const pool = require('../config/db');
 
 class Property {
-  static async create({ title, city, price, type, description, address, zipcode, bedrooms, washrooms, area, furnished, kitchen, water, electricity, UserId, geometry,category }) {
-    return new Promise((resolve, reject) => {
-      pool.query(
-        `INSERT INTO properties (
-         PropertyId, UserId, title, description, price, type, address, zipcode, city, bedrooms, washrooms, area, furnished, kitchen, water, electricity, status, category, created_at, updated_at, geometry, IsPaid)
-VALUES(0, 0, '', '', 0, '', '', '', '', 0, 0, 0, 0, 0, 0, 0, 'Unpaid', '', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, ?, 0)`,
-        [UserId, title, description, price, type, address, zipcode, city, geometry.longitude, geometry.latitude, bedrooms, washrooms, area, furnished, kitchen, water, electricity,category],
-        (error, results) => {
-          if (error) {
-            console.error('Error inserting property:', error);
-            return reject(error);
-          }
-          resolve(results.insertId);
-        }
-      );
+static async create({ title, city, price, type, description, address, zipcode, bedrooms, washrooms, area, furnished, kitchen, water, electricity, UserId, geometry, category }) {
+  return new Promise((resolve, reject) => {
+    const query = `
+      INSERT INTO properties (
+        UserId, title, description, price, type, address, zipcode, city, 
+        bedrooms, washrooms, area, furnished, kitchen, water, electricity, 
+        status, category, geometry, IsPaid
+      ) VALUES (
+        ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'Dis-Conn', ?, 
+        ST_GeomFromText(CONCAT('POINT(', ?, ' ', ?, ')')), 0
+      )
+    `;
+    
+    const values = [
+      UserId, title, description, price, type, address, zipcode, city,
+      bedrooms, washrooms, area, furnished, kitchen, water, electricity,
+      category, geometry.longitude, geometry.latitude
+    ];
+
+    pool.query(query, values, (error, results) => {
+      if (error) {
+        console.error('Error inserting property:', error);
+        return reject(error);
+      }
+      resolve(results.insertId);
     });
-  }
+  });
+}
 
   static async getAll() {
     return new Promise((resolve, reject) => {
