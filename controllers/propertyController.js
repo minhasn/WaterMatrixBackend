@@ -3,8 +3,7 @@ const pool = require('../config/db');
 
 const addProperty = async (req, res) => {
   const { title, city, price, type, description, address, zipcode, bedrooms, washrooms, area, furnished, kitchen, water, electricity, UserId } = req.body;
-  const longitude = parseFloat(req.body.longitude);
-  const latitude = parseFloat(req.body.latitude);
+  const { longitude, latitude } = JSON.parse(req.body.geometry);
   const geometryPoint = `POINT(${longitude} ${latitude})`;
   const images = req.files.map(file => `/${file.path}`);
 
