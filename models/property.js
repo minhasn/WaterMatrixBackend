@@ -1,4 +1,3 @@
-prooerty.js 
 const pool = require('../config/db');
 
 class Property {
