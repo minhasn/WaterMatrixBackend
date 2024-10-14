@@ -1,122 +1,122 @@
 const pool = require('../config/db');
 
 class Property {
-  static create(propertyData) {
+  static async create({ title, city, price, type, description, address, zipcode, bedrooms, washrooms, area, furnished, kitchen, water, electricity, UserId, geometry,category }) {
     return new Promise((resolve, reject) => {
-      const { title, city, price, type, description, address, zipcode, bedrooms, washrooms, area, furnished, kitchen, water, electricity, UserId, geometry, category } = propertyData;
-      
-      const query = `
-        INSERT INTO properties (
-          UserId, title, description, price, type, address, zipcode, city, 
-          bedrooms, washrooms, area, furnished, kitchen, water, electricity, 
-          status, category, geometry, IsPaid
-        ) VALUES (
-          ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'Dis-Conn', ?, 
-          ST_GeomFromText(CONCAT('POINT(', ?, ' ', ?, ')')), 0
-        )
-      `;
-      
-      const values = [
-        UserId, title, description, price, type, address, zipcode, city,
-        bedrooms, washrooms, area, furnished, kitchen, water, electricity,
-        category, geometry.longitude, geometry.latitude
-      ];
+      pool.query(
+        `INSERT INTO properties (
+         PropertyId, UserId, title, description, price, type, address, zipcode, city, bedrooms, washrooms, area, furnished, kitchen, water, electricity, status, category, created_at, updated_at, geometry, IsPaid)
+VALUES(0, 0, '', '', 0, '', '', '', '', 0, 0, 0, 0, 0, 0, 0, 'Unpaid', '', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, ?, 0)`,
+        [UserId, title, description, price, type, address, zipcode, city, geometry.longitude, geometry.latitude, bedrooms, washrooms, area, furnished, kitchen, water, electricity,category],
+        (error, results) => {
+          if (error) {
+            console.error('Error inserting property:', error);
+            return reject(error);
+          }
+          resolve(results.insertId);
+        }
+      );
+    });
+  }
 
-      pool.query(query, values, (error, results) => {
+  static async getAll() {
+    return new Promise((resolve, reject) => {
+        pool.query(
+            `SELECT 
+              p.PropertyId, p.UserId, p.title, p.description, p.price, p.type, 
+              p.address, p.zipcode, p.city, p.bedrooms, p.washrooms, p.area, 
+              p.furnished, p.kitchen, p.water, p.electricity, p.status, 
+              p.category, p.created_at, p.updated_at, p.geometry AS geometry, 
+              p.IsPaid, pi.Photos
+            FROM properties p
+            LEFT JOIN property_images pi ON p.PropertyId = pi.property_id`,
+            (error, results) => {
+                if (error) {
+                    console.error('Error retrieving properties:', error);
+                    return reject(error);
+                }
+
+                // Group results by property ID
+                const properties = {};
+                results.forEach(row => {
+                    const { PropertyId, UserId, title, description, price, type, address, zipcode, city, bedrooms, washrooms, area, furnished, kitchen, water, electricity, status, category, created_at, updated_at, geometry, IsPaid, Photos } = row;
+
+                    if (!properties[PropertyId]) {
+                        properties[PropertyId] = {
+                            PropertyId,
+                            UserId,
+                            title,
+                            description,
+                            price,
+                            type,
+                            address,
+                            zipcode,
+                            city,
+                            bedrooms,
+                            washrooms,
+                            area,
+                            furnished,
+                            kitchen,
+                            water,
+                            electricity,
+                            status,
+                            category,
+                            created_at,
+                            updated_at,
+                            geometry,
+                            IsPaid,
+                            Photos: [] // Initialize Photos array
+                        };
+                    }
+
+                    // Check if Photos exists and push it to the Photos array
+                    if (Photos) {
+                        properties[PropertyId].Photos.push(Photos); // Ensure we're pushing into the right array
+                    }
+                });
+
+                resolve(Object.values(properties)); // Return an array of properties
+            }
+        );
+    });
+}
+static async getById(propertyId) {
+  return new Promise((resolve, reject) => {
+    pool.query(
+      `SELECT 
+        p.PropertyId, p.UserId, p.title, p.description, p.price, p.type, 
+        p.address, p.zipcode, p.city, p.bedrooms, p.washrooms, p.area, 
+        p.furnished, p.kitchen, p.water, p.electricity, p.status, 
+        p.category, p.created_at, p.updated_at, 
+        p.geometry AS geometry, 
+        GROUP_CONCAT(pi.Photos) AS Photos
+      FROM properties p
+      LEFT JOIN property_images pi ON p.PropertyId = pi.property_id
+      WHERE p.PropertyId = ?
+      GROUP BY 
+        p.PropertyId, p.UserId, p.title, p.description, p.price, p.type, 
+        p.address, p.zipcode, p.city, p.bedrooms, p.washrooms, p.area, 
+        p.furnished, p.kitchen, p.water, p.electricity, p.status, 
+        p.category, p.created_at, p.updated_at`,
+      [propertyId],
+      (error, results) => {
         if (error) {
-          console.error('Error inserting property:', error);
+          console.error('Error retrieving property:', error);
           return reject(error);
         }
-        resolve(results.insertId);
-      });
-    });
-  }
 
-  static getAll() {
-    return new Promise((resolve, reject) => {
-      pool.query(
-        `SELECT 
-          p.*, 
-          ST_X(p.geometry) AS longitude,
-          ST_Y(p.geometry) AS latitude,
-          pi.Photos
-        FROM properties p
-        LEFT JOIN property_images pi ON p.PropertyId = pi.property_id`,
-        (error, results) => {
-          if (error) {
-            console.error('Error retrieving properties:', error);
-            return reject(error);
-          }
-
-          const properties = {};
-          results.forEach(function(row) {
-            const PropertyId = row.PropertyId;
-            const longitude = row.longitude;
-            const latitude = row.latitude;
-            const Photos = row.Photos;
-            
-            if (!properties[PropertyId]) {
-              properties[PropertyId] = Object.assign({}, row, {
-                geometry: { x: longitude, y: latitude },
-                Photos: []
-              });
-              delete properties[PropertyId].longitude;
-              delete properties[PropertyId].latitude;
-            }
-
-            if (Photos) {
-              properties[PropertyId].Photos.push(Photos);
-            }
-          });
-
-          resolve(Object.values(properties));
+        if (results.length === 0) {
+          return resolve(null); // Property not found
         }
-      );
-    });
-  }
 
-  static getById(propertyId) {
-    return new Promise((resolve, reject) => {
-      pool.query(
-        `SELECT 
-          p.*, 
-          ST_X(p.geometry) AS longitude,
-          ST_Y(p.geometry) AS latitude,
-          GROUP_CONCAT(pi.Photos) AS Photos
-        FROM properties p
-        LEFT JOIN property_images pi ON p.PropertyId = pi.property_id
-        WHERE p.PropertyId = ?
-        GROUP BY p.PropertyId`,
-        [propertyId],
-        (error, results) => {
-          if (error) {
-            console.error('Error retrieving property:', error);
-            return reject(error);
-          }
+        const property = results[0];
 
-          if (results.length === 0) {
-            return resolve(null); // Property not found
-          }
 
-          var property = results[0];
-          property.geometry = { 
-            x: property.longitude, 
-            y: property.latitude 
-          };
-          delete property.longitude;
-          delete property.latitude;
-
-          if (property.Photos) {
-            property.Photos = property.Photos.split(',');
-          } else {
-            property.Photos = [];
-          }
-
-          resolve(property);
-        }
-      );
-    });
-  }
+        resolve(property);
+      }
+    );
+  });
+}
 }
 
 module.exports = Property;
