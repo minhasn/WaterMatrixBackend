@@ -1,12 +1,13 @@
 const client = require('../config/db');
 
 class PropertyImage {
-  static async create({ propertyId, imageUrl }) {
+  static async create({ propertyId, imageData, imageUrl }) {
     const result = await client.query(
-      `INSERT INTO "property_images" (property_id, image_url) VALUES ($1, $2) RETURNING id`,
-      [propertyId, imageUrl]
+      `INSERT INTO "property_images" (property_id, Photos, image_url) 
+       VALUES ($1, $2, $3) RETURNING id`,
+      [propertyId, imageData, imageUrl]
     );
-    return result.rows[0];  // This will return the new image ID
+    return result.rows[0];
   }
 
   static async getByPropertyId(propertyId) {
