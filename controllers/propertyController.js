@@ -20,7 +20,7 @@ const addProperty = async (req, res) => {
     const propertyId = await Property.create({ 
       title, city, price, type, description, address, zipcode, 
       bedrooms, washrooms, area, furnished, kitchen, water, 
-      electricity, UserId, geometry, category 
+      electricity, UserId, geometry,
     });
 
     if (images.length > 0) {
