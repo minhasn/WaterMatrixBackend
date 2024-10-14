@@ -4,7 +4,7 @@ class Property {
 static async create({ 
   title, city, price, type, description, address, zipcode, 
   bedrooms, washrooms, area, furnished, kitchen, water, 
-  electricity, UserId, geometry, category, longitude, latitude,
+  electricity, UserId, category, longitude, latitude,
 }) {
   
   const geometry = `POINT(${longitude} ${latitude})`;
