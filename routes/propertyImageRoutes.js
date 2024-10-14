@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const PropertyImageController = require('../controllers/imageController');
 const multer = require('multer');
+const upload = multer({ dest: 'uploads/' });
 
 
 // Route to add an image
