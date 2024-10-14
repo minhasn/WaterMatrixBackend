@@ -1,7 +1,6 @@
 const express = require('express');
 const router = express.Router();
 const PropertyImageController = require('../controllers/imageController');
-app.use('/uploads', express.static('uploads'));
 const multer = require('multer');
 
 
