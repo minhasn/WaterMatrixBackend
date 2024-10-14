@@ -3,6 +3,10 @@ const pool = require('../config/db');
 
 const addProperty = async (req, res) => {
   const { title, city, price, type, description, address, zipcode, bedrooms, washrooms, area, furnished, kitchen, water, electricity, UserId } = req.body;
+  const furnished = req.body.furnished === 'true' ? 1 : 0;
+  const kitchen = req.body.kitchen === 'true' ? 1 : 0;
+  const water = req.body.water === 'true' ? 1 : 0;
+  const electricity = req.body.electricity === 'true' ? 1 : 0;
   const longitude = parseFloat(req.body.longitude);
   const latitude = parseFloat(req.body.latitude);
   const geometry = `POINT(${longitude} ${latitude})`;
