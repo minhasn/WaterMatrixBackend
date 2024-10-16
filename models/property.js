@@ -16,7 +16,7 @@ static async create({
         address, zipcode, city, bedrooms, washrooms, area, 
         furnished, kitchen, water, electricity, status, 
         category, created_at, updated_at, geometry, IsPaid)
-      VALUES(0, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'New', ?, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, ?, 0)`, // Use the geometry directly
+      VALUES(0, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, ST_GeomFromText(?, 4326), 0)`,
       [UserId, title, description, price, type, address, zipcode, city, 
        bedrooms, washrooms, area, furnished, kitchen, water, electricity, 
        category, geometry],
@@ -30,7 +30,6 @@ static async create({
     );
   });
 }
-  
 
   static async getAll() {
     return new Promise((resolve, reject) => {
