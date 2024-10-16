@@ -16,10 +16,10 @@ static async create({
         address, zipcode, city, bedrooms, washrooms, area, 
         furnished, kitchen, water, electricity, status, 
         category, created_at, updated_at, geometry, IsPaid)
-      VALUES(0, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, ST_GeomFromText(?, 4326), 0)`,
+      VALUES(0, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'New', ?, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, ST_GeomFromText(?, 4326), 0)`,
       [UserId, title, description, price, type, address, zipcode, city, 
        bedrooms, washrooms, area, furnished, kitchen, water, electricity, 
-       category, geometry],
+       category, geometry], // geometry should be passed as a string like 'POINT(lng lat)'
       (error, results) => {
         if (error) {
           console.error('Error inserting property:', error);
@@ -29,7 +29,7 @@ static async create({
       }
     );
   });
-}
+  
 
   static async getAll() {
     return new Promise((resolve, reject) => {
