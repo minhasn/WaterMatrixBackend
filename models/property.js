@@ -7,7 +7,7 @@ static async create({
   electricity, UserId, category, longitude, latitude,
 }) {
   
-  const geometry = `POINT(${longitude} ${latitude})`;
+  const geometry = `POINT(${latitude} ${longitude})`; 
   
   return new Promise((resolve, reject) => {
     pool.query(
