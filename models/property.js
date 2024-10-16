@@ -19,7 +19,7 @@ static async create({
       VALUES(0, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'New', ?, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, ST_GeomFromText(?, 4326), 0)`,
       [UserId, title, description, price, type, address, zipcode, city, 
        bedrooms, washrooms, area, furnished, kitchen, water, electricity, 
-       category, geometry], // geometry should be passed as a string like 'POINT(lng lat)'
+       category, geometry],
       (error, results) => {
         if (error) {
           console.error('Error inserting property:', error);
