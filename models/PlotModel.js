@@ -4,8 +4,8 @@ const pool = require('../config/db');
 const getAllPlots = async () => {
   try {
     const [rows] = await pool.promise().query(`
-     SELECT WKT, id_0, id, dimension, landuse_su, landuse__1, propertyno, sub_sector, sector, geometry
-FROM I8_4326
+SELECT OGR_FID, SHAPE, entity, layer, plotid, plot_num, address1, address2, city, desc_
+FROM railway.i_8_plot_4326_uni
     `);
     return rows;
    
